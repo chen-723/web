@@ -20,7 +20,7 @@
       </form>
 
       <div class="fn">
-        <a href="javascript:;">注册账号</a>
+        <router-link to="/register">注册账号</router-link>
         <a href="javascript:;">找回密码</a>
       </div>
     </div>

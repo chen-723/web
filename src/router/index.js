@@ -5,13 +5,15 @@ Vue.use(VueRouter)
 
 const routes = [
   { path: '/login', component: () => import('@/components/LoginBox.vue') },
+  { path: '/register', component: () => import('@/views/RegisterPage.vue') }, // ✅ 改这里
   { path: '/home', name: 'HomePage', component: () => import('@/views/HomePage.vue') },
   { path: '/', redirect: '/login' }
 ]
 
+
 const router = new VueRouter({
-  mode: 'history',
-  routes // ✅ 这里必须是 routes，不是 routesl
+  mode: 'hash',
+  routes
 })
 
 export default router
