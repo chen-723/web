@@ -41,16 +41,22 @@ export default {
   methods: {
     async handleLogin() {
       if (!this.username || !this.password) {
-        alert('请输入账号和密码')
-        return
-      }
+         alert('请输入账号和密码')
+       return
+         }
       try {
         const { data } = await login(this.username, this.password)
-        alert('登录成功：' + JSON.stringify(data))
-        // 登录成功后跳首页示例：
-        this.$router.push('/home')
-      } catch (err) {
-        alert('登录失败：' + (err.response?.data?.message || err.message))
+
+         // 1️⃣ 保存 token（如果后端给了）
+         localStorage.setItem('token', data.token || 'fake-token')
+        // 2️⃣ 保存用户名
+        localStorage.setItem('username', this.username)
+        localStorage.setItem('token', data.token || 'fake-token')
+        localStorage.setItem('user', JSON.stringify(data.user))
+         // 3️⃣ 跳首页（用 replace 避免回退）
+         this.$router.replace('/home')
+         } catch (err) {
+           alert('登录失败：' + (err.response?.data?.message || err.message))
       }
     }
   }
@@ -85,7 +91,7 @@ html::before {
 }
 
 html {
-  font-size: 10px;
+  font-size: 8px;
 }
 
 html::before {

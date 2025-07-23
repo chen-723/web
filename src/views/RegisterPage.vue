@@ -1,22 +1,32 @@
 <template>
-  <div class="register-container">
-    <div class="register-box">
-      <h2>注册账号</h2>
+  <div class="box">
+    <!-- 左侧图片 -->
+    <div class="left"></div>
+
+    <!-- 右侧注册表单 -->
+    <div class="right">
+      <h4>注 册</h4>
 
       <form @submit.prevent="handleRegister">
-        <input v-model="username" type="text" placeholder="请输入用户名" />
-        <input v-model="password" type="password" placeholder="请输入密码" />
-        <button type="submit">注册</button>
+        <input v-model="username" class="acc" type="text" placeholder="用户名" />
+        <input v-model="password" class="acc" type="password" placeholder="密码" />
+        <input v-model="email"    class="acc" type="email" placeholder="邮箱（可选）" />
+        <input v-model="avatar"   class="acc" type="text"  placeholder="头像URL(可选)" />
+        <input class="submit" type="submit" value="注册" />
       </form>
 
-      <p v-if="message" :style="{ color: messageColor, marginTop: '1rem' }">
+      <div class="fn">
+        <router-link to="/login">返回登录</router-link>
+        <a href="javascript:;">找回密码</a>
+      </div>
+
+      <p v-if="message" :style="{ color: messageColor, marginTop: '1.5rem', fontSize: '1.4rem' }">
         {{ message }}
       </p>
-
-      <router-link to="/login">返回登录</router-link>
     </div>
   </div>
 </template>
+
 
 <script>
 import axios from 'axios'
@@ -27,6 +37,8 @@ export default {
     return {
       username: '',
       password: '',
+      email: '',
+      avatar: '',
       message: '',
       messageColor: 'red'
     }
@@ -41,7 +53,9 @@ export default {
       try {
         const res = await axios.post('http://localhost:3000/api/register', {
           username: this.username,
-          password: this.password
+          password: this.password,
+          email: this.email,
+          avatar_url: this.avatar
         })
 
         if (res.data.code === 0) {
@@ -59,77 +73,127 @@ export default {
 }
 </script>
 
-<style scoped>
-.register-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+<style>
+/* === 全局背景 === */
+html {
+  font-size: 8px;
+}
+html::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
   background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
 }
+</style>
 
-.register-box {
+<style scoped>
+/* ====== 登录/注册共用外观 ====== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+::selection {
+  color: #fff;
+  background-color: rgb(144, 129, 240);
+}
+
+.box {
+  display: flex;
   width: 90rem;
-  height: 55rem;
-  background: rgba(255, 255, 255, 0.6);
+  height: 60rem;
+  background-color: rgba(255, 255, 255, 0.6);
   border-radius: 1.5rem;
   box-shadow: 0 0 1rem 0.2rem rgb(0 0 0 / 10%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+}
+
+/* 左侧图片 */
+.box .left {
+  width: 40%;
+  height: 100%;
+  position: relative;
+  border-radius: 1.5rem 0 0 1.5rem;
+  overflow: hidden;
+}
+.box .left::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url("@/assets/login-bg.png");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.8;
+}
+
+/* 右侧表单 */
+.box .right {
+  width: 60%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 }
-
-.register-box h2 {
-  font-size: 3rem;
+.box .right h4 {
   color: rgb(144, 129, 241);
-  margin-bottom: 4rem;
+  font-size: 2rem;
+  margin-top: 3rem;
 }
-
-.register-box form {
-  width: 50%;
+.box .right form {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 }
-
-.register-box input {
-  width: 70%;
+.box .right .acc {
+  outline: none;
+  width: 80%;
   height: 5rem;
   font-size: 1.6rem;
-  padding: 1rem 1.5rem;
-  margin-top: 2rem;
+  margin-top: 3.5rem;
+  padding: 1rem 0 0 1.6rem;
   border: none;
   border-bottom: 1px solid rgb(144, 129, 241);
-  background: transparent;
-  outline: none;
+  color: rgb(144, 129, 241);
+  background-color: transparent;
+}
+.right .acc:focus {
   color: rgb(144, 129, 241);
 }
-
-.register-box button {
+.right .submit {
   width: 60%;
   height: 5rem;
-  margin-top: 4rem;
-  font-size: 1.6rem;
-  color: #fff;
-  background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+  color: #f6f6f6;
+  background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+  font-size: 1.4rem;
   border: none;
   border-radius: 0.5rem;
+  margin: 5rem 0 0 50%;
+  transform: translateX(-50%);
   cursor: pointer;
 }
-
-.register-box button:hover {
+.right .submit:hover {
   box-shadow: 0 0 2rem -0.5rem rgb(0 0 0 / 15%);
 }
-
-.register-box a {
+.right .fn {
+  display: flex;
+  justify-content: space-between;
+  width: 70%;
+  margin-top: 1rem;
+}
+.right .fn a {
+  font-size: 1.3rem;
   margin-top: 3rem;
-  font-size: 1.4rem;
+  padding: 1rem 2rem;
   color: #666;
   text-decoration: none;
 }
-
-.register-box a:hover {
+.right .fn a:hover {
   color: rgb(144, 129, 241);
 }
 </style>
