@@ -17,7 +17,7 @@
       >
         <div v-for="m in messages" :key="m.id" style="margin:4px 0;">
           <b>{{ m.username }}</b> <small style="color:#888;">{{ m.created_at }}</small><br/>
-          {{ m.content }}
+          {{ m.content +'喵~' }}
         </div>
       </div>
 
@@ -44,11 +44,21 @@ export default {
     return {
       user: JSON.parse(localStorage.getItem('user') || '{}'),
       messages: [],
-      newMsg: ''
+      newMsg: '',
+      timer: null,
+       autoRefresh: false   // true 开启，false 关闭
     }
   },
   created() {
+    // 首次加载 + 每 3 秒自动刷新
     this.loadMessages()
+    if (this.autoRefresh) {
+    this.timer = setInterval(this.loadMessages, 6000)
+    }
+  },
+  beforeDestroy() {
+    // 页面离开时清理定时器
+    clearInterval(this.timer)
   },
   methods: {
     logout() {
@@ -56,15 +66,18 @@ export default {
       localStorage.removeItem('user')
       this.$router.replace('/login')
     },
-    // 手动刷新消息
+    // 手动/自动刷新消息列表
     loadMessages() {
       fetchMessages()
         .then(res => {
-          if (res.data.code === 0) this.messages = res.data.data
-          this.$nextTick(() => {
-            const box = this.$refs.msgBox
-            box && (box.scrollTop = box.scrollHeight)
-          })
+          if (res.data.code === 0) {
+            this.messages = res.data.data
+            // 滚动到底
+            this.$nextTick(() => {
+              const box = this.$refs.msgBox
+              box && (box.scrollTop = box.scrollHeight)
+            })
+          }
         })
         .catch(console.error)
     },
@@ -80,7 +93,10 @@ export default {
 
       sendMessage(payload)
         .then(res => {
-          if (res.data.code === 0) return this.loadMessages()
+          if (res.data.code === 0) {
+            // 发送后立即刷新
+            return this.loadMessages()
+          }
           throw new Error(res.data.message)
         })
         .catch(console.error)
