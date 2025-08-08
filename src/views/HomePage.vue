@@ -46,7 +46,7 @@ export default {
       messages: [],
       newMsg: '',
       timer: null,
-       autoRefresh: true   // true 开启，false 关闭
+       autoRefresh: false   // true 开启，false 关闭
     }
   },
   created() {
