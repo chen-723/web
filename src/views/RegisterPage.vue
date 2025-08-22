@@ -196,4 +196,12 @@ html::before {
 .right .fn a:hover {
   color: rgb(144, 129, 241);
 }
+
+@media (max-width: 600px) {
+  .box {
+    /* 原来的居中保持不动，只追加 scale */
+    transform: translate(-50%, -50%) scale(0.5);
+    transform-origin: center center;
+  }
+}
 </style>
